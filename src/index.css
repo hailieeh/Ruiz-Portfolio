@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+/* Breakpoints are Tailwind's defaults, mobile-first (base = phone):
+   md 768px = tablet, lg 1024px = desktop. Height variants below cover short screens. */
+@custom-variant short (@media (max-height: 760px));
+@custom-variant shorter (@media (max-height: 700px));
+@custom-variant tall (@media (min-height: 761px));
+
+@theme static {
+  --color-bg: #f6f6f3;
+  --color-bg-2: #eeeeea;
+  --color-ink: #111111;
+  --color-ink-2: #2b2b29;
+  --color-muted: #5d5d58;
+  --color-line: #d8d8d2;
+  --color-accent: #0e7c5a;
+  --color-accent-soft: #dcefe8;
+  --color-dark: #0f0f0e;
+  --color-on-dark: #f3f3ee;
+  --color-on-dark-muted: #a9a9a2;
+  --color-mint: #3fcf9f;
+  --color-dark-line: #2c2c29;
+  --color-dark-line-2: #3a3a36;
+
+  --font-display: "Anton", "Impact", "Arial Narrow", sans-serif;
+  --font-sans: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: "Playfair Display", Georgia, serif;
+
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --spacing-gutter: clamp(18px, 4vw, 60px);
+  --container-page: 1320px;
+}
+
+/* ───────── Base: the site is one fixed screen, panels scroll inside it ───────── */
+@layer base {
+  html { -webkit-text-size-adjust: 100%; height: 100%; overflow: hidden; }
+  body {
+    height: 100%; margin: 0; overflow: hidden; line-height: 1.55;
+    background: var(--color-bg); color: var(--color-ink); -webkit-font-smoothing: antialiased;
+  }
+  #root { height: 100%; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 4px; }
+  ::selection { background: var(--color-accent); color: #fff; }
+}
+
+/* ───────── Keyframes (used by the utilities in the markup) ───────── */
+@keyframes rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+@keyframes letter { from { transform: translateY(112%) rotate(6deg); } to { transform: none; } }
+@keyframes drawX { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes glow { 50% { transform: scale(1.18); opacity: .75; } }
+@keyframes floaty { 50% { transform: translateY(-.6em) rotate(-.8deg); } }
+@keyframes scan { 0% { top: .5em; opacity: 0; } 8% { opacity: 1; } 60% { top: calc(100% - .7em); opacity: 1; } 68%, 100% { top: calc(100% - .7em); opacity: 0; } }
+@keyframes ok { 0%, 58% { opacity: 0; transform: translateY(10px) scale(.9); } 68%, 92% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(-4px); } }
+
+/* children of a panel rise in one by one (set --i on the element) */
+@utility rise { animation: rise .75s var(--ease-soft) both; animation-delay: calc(var(--i, 0) * 70ms + 120ms); }
+@utility letter-in { animation: letter .95s var(--ease-soft) both; animation-delay: calc(var(--i) * 45ms + 120ms); }
+
+/* ───────── The few things utilities cannot express ───────── */
+/* only applies when RESPECT_REDUCED_MOTION is true in src/lib/smooth.js */
+.reduce-motion *, .reduce-motion *::before, .reduce-motion *::after {
+  animation-duration: .01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important;
+}
+/* a freshly swapped-in page waits, invisible, until the transition starts revealing it */
+[data-hold] *, [data-hold] *::before, [data-hold] *::after { animation-play-state: paused !important; }
