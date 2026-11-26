@@ -31,6 +31,11 @@ The About portrait is `src/assets/portrait-bw.webp`. The FaithEvents Events-page
 ## Logo
 `logo/` holds the HR monogram (black, white, green, app icon). Favicons are in `public/`.
 
-## Hosting note
-The site uses `BrowserRouter`, so the host must serve `index.html` for unknown paths
-(Netlify/Vercel/Cloudflare Pages do this; for GitHub Pages switch to `HashRouter` in `src/main.jsx`).
+## Hosting on GitHub Pages
+The site uses `HashRouter` (URLs look like `/#/about`) and a relative Vite `base`, so it works from `https://<user>.github.io/<repo>/` without any server rewrites.
+
+1. Push this project to a GitHub repo (branch `main`).
+2. In the repo go to **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+3. Every push to `main` runs `.github/workflows/deploy.yml`, builds the site and publishes `dist/`.
+
+Do not point Pages at the repo root ("Deploy from a branch"): that serves the raw source, and the browser cannot run `/src/main.jsx`, which gives a blank white page.
